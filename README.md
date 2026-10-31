@@ -1,76 +1,127 @@
 Uliong-AI
 
-Evidence-driven, AI-assisted threat analysis for suspicious digital content.
+Evidence-driven threat intelligence for suspicious digital content.
 
-Uliong-AI is a web application designed to help users examine potentially malicious messages, URLs, images, and files. It combines a structured analysis workflow with AI-assisted assessment to identify suspicious signals, explain potential risks, and recommend practical next steps.
+Uliong-AI is an AI-assisted security analysis platform designed to help users investigate suspicious messages, URLs, images, and files.
 
-The project follows a security-first development approach: submitted content is treated as untrusted data, provider credentials are kept server-side, and analysis responses are validated before the application consumes them.
+It combines structured analysis workflows, AI-powered assessments, and security-oriented engineering principles to help surface potential threats, explain suspicious indicators, and guide informed decisions.
 
-«Development status: Active development. This is not a certified security product. Some input-processing capabilities remain placeholders and are not production-ready.»
+«Development status: Actively evolving. Uliong-AI is a developing security platform, not a certified security product. Some analysis capabilities remain incomplete or simulated.»
 
-Core objectives
+---
 
-Uliong-AI is being developed to assist with identifying and understanding:
+What Uliong-AI is designed to address
 
-- Phishing and credential-harvesting attempts
-- Impersonation and social engineering
+Digital threats often rely on deception, impersonation, urgency, and misplaced trust. Uliong-AI aims to make suspicious digital content easier to examine and understand.
+
+Its intended analysis areas include:
+
+- Phishing and credential harvesting
+- Social engineering and impersonation
 - Fraudulent payment and prize claims
 - Suspicious URLs and account-verification requests
-- Manipulative urgency and other scam indicators
+- Manipulative urgency and deceptive messaging
+- Potentially malicious files and images
 
-An assessment includes a risk score, risk classification, threat indicators, explanation, recommended action, confidence level, and available pipeline timing information.
+The goal is not simply to produce a verdict. It is to provide useful context around why content may be suspicious and what a user should consider doing next.
 
-AI-generated assessments are decision-support information, not proof that content is safe or malicious. Important requests should always be independently verified.
-
-Application capabilities
+Platform capabilities
 
 The current application includes:
 
-- Public landing page
-- Authentication and application entry point
-- Threat-analysis dashboard
-- Scan centre for text, URL, image, and file inputs
-- Analysis history
-- User settings and provider selection
-- Supabase-backed authentication and analysis services
-- OpenAI and Google Gemini provider integration through a server-side Edge Function
+Capability| Description
+Authentication| User access through Supabase Auth
+Dashboard| Overview of analysis activity and platform information
+Scan centre| Interface for submitting text, URLs, images, and files
+AI analysis| Provider-backed assessment through a server-side function
+Analysis history| Access to stored analysis records
+Settings| User preferences and AI provider selection
 
-Some interface elements and dashboard metrics still use demonstration data.
+Some dashboard metrics and interface elements still rely on demonstration data. Their presence should not be interpreted as evidence of live threat detection.
 
-Architecture
+How the system works
 
-The application follows a frontend-to-backend analysis flow:
+Uliong-AI follows a frontend-to-backend analysis workflow.
 
-1. Input: A user submits content for examination.
-2. Preparation: The scan workflow prepares the content for analysis.
-3. Authentication: The application invokes the Supabase Edge Function using the authenticated session.
-4. Identity verification: The Edge Function verifies the caller's Supabase access token.
-5. Provider execution: The function calls the selected AI provider using a server-side credential.
-6. Validation: The provider response is checked against the expected structure and value constraints.
-7. Persistence: Authenticated analysis records are accessed through the Supabase data layer.
-8. Presentation: The application displays the assessment and available history.
+```text
+USER SUBMISSION
+|
+v
+FRONTEND SCAN WORKFLOW
+|
+v
+AUTHENTICATED REQUEST
+|
+v
+SUPABASE EDGE FUNCTION
+|
+v
+TOKEN VERIFICATION
+|
+v
+AI PROVIDER SELECTION
+/           
+v             v
+OPENAI         GEMINI
+\             /
+v           v
+RESPONSE VALIDATION
+|
+v
+SUPABASE DATA LAYER
+|
+v
+ANALYSIS PRESENTATION
+```
 
-The system is designed to report failures explicitly when services are unavailable, provider calls time out, or responses are malformed. It should not manufacture a successful threat verdict when analysis fails.
+The workflow is intended to:
+
+1. Receive content submitted by an authenticated user.
+2. Prepare the input for analysis.
+3. Send an authenticated request to the Supabase Edge Function.
+4. Verify the caller's access token.
+5. Call the selected AI provider using a server-side credential.
+6. Validate the provider's response and expected value ranges.
+7. Access analysis records through the Supabase data layer.
+8. Present the resulting assessment to the user.
+
+Failed requests, timeouts, and malformed responses should be reported as failures rather than converted into fabricated successful verdicts.
+
+Assessment model
+
+An analysis may contain:
+
+- Risk score
+- Risk classification
+- Identified threat indicators
+- Explanation of suspicious signals
+- Recommended next action
+- Confidence level
+- Available processing information
+
+AI-generated assessments are probabilistic. They can be incorrect, incomplete, or uncertain. A low-risk result does not prove that content is safe, and a high-risk result is not proof of malicious intent.
+
+Independent verification remains essential.
 
 Technology stack
 
-Layer| Technology
+Layer| Technologies
 Frontend| React 18, TypeScript
-Build tooling| Vite
+Build system| Vite
 Styling| Tailwind CSS 4
 Routing| React Router
 State management| Zustand
 Forms| React Hook Form
 Validation| Zod
-Charts| Recharts
+Data visualization| Recharts
 Animation| Framer Motion
 Backend services| Supabase
 Authentication| Supabase Auth
-Server-side analysis| Supabase Edge Functions
-AI providers| OpenAI, Google Gemini
+Server-side execution| Supabase Edge Functions
+AI integrations| OpenAI, Google Gemini
 Edge runtime| Deno
 
-Project structure
+Repository structure
 
 ```text
 .
@@ -98,138 +149,174 @@ Project structure
 └── vite.config.ts
 ```
 
-Requirements
+Getting started
 
-- Node.js compatible with the Vite version specified in "package.json"
+Prerequisites
+
+- Node.js compatible with the version of Vite specified in "package.json"
 - npm
 - A Supabase project
 - An OpenAI API key or Google Gemini API key for provider-backed analysis
 
-Local development
-
-Clone the repository after its rename:
+1. Clone the repository
 
 ```bash
 git clone https://github.com/Josh-Fynly/uliong-ai.git
 cd uliong-ai
+```
+
+2. Install dependencies
+
+```bash
 npm install
 ```
 
-Create ".env.local" in the project root:
+3. Configure frontend environment variables
+
+Create a ".env.local" file in the project root:
 
 ```dotenv
 VITE_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
 VITE_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
 ```
 
-Start the development server:
+Use your actual Supabase project values.
+
+4. Start the development server
 
 ```bash
 npm run dev
 ```
 
-Create a production build:
+5. Build for production
 
 ```bash
 npm run build
 ```
 
-Preview the production build:
+6. Preview the production build
 
 ```bash
 npm run preview
 ```
 
-The current package scripts provide development, build, and preview commands. A dedicated automated test suite and separate TypeScript type-check script are not currently declared.
+Supabase and AI provider configuration
 
-Supabase and AI configuration
-
-The frontend uses:
-
-Variable| Purpose
-"VITE_SUPABASE_URL"| Supabase project URL
-"VITE_SUPABASE_ANON_KEY"| Public client key for Supabase
-
-Deploy the analysis function:
+Deploy the Edge Function
 
 ```bash
 supabase functions deploy analyze-content
 ```
 
-Configure the following secrets in the Supabase Edge Function environment:
+Configure server-side secrets
+
+Set the following secrets in the Supabase Edge Function environment:
 
 Secret| Purpose
-"OPENAI_API_KEY"| OpenAI provider authentication
-"GEMINI_API_KEY"| Google Gemini provider authentication
-"ALLOWED_ORIGINS"| Comma-separated permitted browser origins
+"OPENAI_API_KEY"| OpenAI API authentication
+"GEMINI_API_KEY"| Google Gemini API authentication
+"ALLOWED_ORIGINS"| Comma-separated list of permitted browser origins
 
 The function also uses the Supabase-provided "SUPABASE_URL" and "SUPABASE_ANON_KEY" environment variables.
 
-Never commit actual credentials, access tokens, or production secrets.
+Never expose provider API keys in frontend code or commit credentials to version control.
 
-Security principles
+Security engineering principles
 
-The current implementation includes several security-oriented controls:
+Uliong-AI is being developed around the following principles:
 
-- AI provider requests are routed through the Supabase Edge Function.
-- Provider credentials are read from server-side secrets.
-- The analysis endpoint verifies the caller's bearer token.
-- Submitted content is explicitly treated as untrusted data in the AI prompt.
-- Provider responses are validated before being accepted.
-- Risk scores and confidence values are constrained to expected ranges.
-- Provider requests have a timeout.
-- Frontend analysis data access uses the authenticated Supabase user.
-- Database access is designed to rely on Row Level Security.
+1. Server-side credential handling
 
-These controls do not establish that the entire application is secure. Production readiness requires verification of deployed database policies, authentication boundaries, function configuration, origin restrictions, abuse controls, logging, and secret management.
+Provider credentials are kept in server-side environment secrets rather than exposed through frontend configuration.
 
-Known limitations
+2. Authentication boundaries
 
-The following limitations are important:
+The analysis endpoint verifies the caller's bearer token before processing an authenticated request.
 
-- Image OCR: The current OCR service generates placeholder text; it does not perform real image recognition.
-- Document extraction: TXT files are read as text, but PDF and DOCX extraction is currently simulated.
-- Automated testing: A complete automated test suite is not currently declared.
-- Dependency reproducibility: No package lockfile was present in the inspected repository tree.
-- Dashboard data: Sample records are used for demonstration and must not be mistaken for live threat detections.
-- AI reliability: AI assessments can be incorrect, incomplete, or uncertain.
+3. Untrusted input handling
 
-Do not use the application as the sole security control for financial transactions, identity verification, account recovery, or other high-impact decisions.
+Submitted content is treated as untrusted data, not as instructions that should override the analysis workflow.
+
+4. Response validation
+
+Provider responses are checked before the application accepts and presents them.
+
+5. Explicit failure handling
+
+Unavailable services, timeouts, and invalid responses should not produce fabricated successful assessments.
+
+6. User data isolation
+
+Analysis data access is designed around the authenticated Supabase user and database Row Level Security.
+
+These controls are not a guarantee of application-wide security. Database policies, deployment configuration, origin restrictions, abuse prevention, logging, and access boundaries still require thorough verification.
+
+Current limitations
+
+Transparency about incomplete functionality is part of the project's engineering approach.
+
+Area| Current status
+Text analysis| AI-provider integration implemented
+URL analysis| Scan workflow available; detection quality requires validation
+Image OCR| Placeholder implementation; no real image recognition
+TXT extraction| Text reading supported
+PDF extraction| Simulated
+DOCX extraction| Simulated
+Dashboard metrics| Some demonstration data
+Automated testing| Dedicated comprehensive test suite not currently declared
+Dependency lockfile| No lockfile was present in the inspected repository tree
+
+Do not treat simulated extraction, demonstration records, or AI-generated assessments as verified security detections.
 
 Deployment
 
-The frontend can be deployed to a static hosting provider supporting Vite.
+The frontend can be deployed to a static hosting provider that supports Vite.
 
-Setting| Value
+Deployment setting| Value
 Build command| "npm run build"
-Output directory| "dist"
-Frontend environment variables| "VITE_SUPABASE_URL", "VITE_SUPABASE_ANON_KEY"
+Build output| "dist"
+Frontend configuration| "VITE_SUPABASE_URL", "VITE_SUPABASE_ANON_KEY"
 
-The Supabase Edge Function must be deployed and configured separately. A successful frontend deployment does not prove that backend analysis is operational.
+The Supabase Edge Function must be deployed and configured separately. A successful frontend deployment does not establish that backend analysis is operational.
 
-Engineering principles
+Engineering direction
 
-1. Evidence before verdicts: Assessments should be grounded in identifiable signals.
-2. Fail honestly: Failed analysis must never become a fabricated successful result.
-3. Least privilege: Authentication and user isolation must be enforced at the backend and database boundaries.
-4. Untrusted input by default: Submitted content is evidence, never an instruction source.
-5. Human judgement: The system supports security decisions; it does not guarantee outcomes.
-6. Continuous verification: Changes should be built, tested, reviewed, and measured before promotion.
+Uliong-AI is being developed with a focus on:
+
+- Evidence-driven threat assessment
+- Reliable analysis workflows
+- Secure backend integration
+- Clear separation of frontend and server-side responsibilities
+- Responsible use of AI in security-related decisions
+- Continuous testing and verification
+
+The long-term direction is to evolve beyond a basic scanning interface into a more capable security analysis platform.
 
 Contributing
 
-Uliong-AI is actively evolving.
+Contributions should be focused, reviewable, and consistent with the project's security principles.
 
-Before submitting changes:
+Before submitting a change:
 
-1. Inspect the affected implementation and its dependencies.
-2. Identify security assumptions and data boundaries.
-3. Make a focused, reviewable change.
+1. Understand the affected components and dependencies.
+2. Identify relevant security assumptions and data boundaries.
+3. Make a focused implementation change.
 4. Run the available build and relevant checks.
-5. Document configuration requirements and known limitations.
+5. Document new configuration requirements and known limitations.
 
-Never commit secrets, real user credentials, or private user data.
+Do not commit secrets, real user credentials, or private user data.
 
 License
 
-See "LICENSE" (LICENSE).
+Uliong-AI is licensed under the Apache License, Version 2.0.
+
+You may use, reproduce, modify, and distribute the project in accordance with the terms and conditions of the license.
+
+See the "LICENSE" (LICENSE) file for the complete license text.
+
+---
+
+<p align="center">
+  <strong>Uliong-AI</strong><br />
+  Evidence before verdicts. Security through engineering.
+</p>
